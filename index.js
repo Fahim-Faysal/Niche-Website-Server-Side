@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const { MongoClient } = require('mongodb')
+const ObjectId = require('mongodb').ObjectId
 const cors = require('cors')
 require('dotenv').config()
 const port = process.env.PORT || 4000
@@ -19,20 +20,40 @@ async function run() {
 
             const databse = client.db('bike_shop');
             const bikeCollection = databse.collection('bike')
+            const bikeOrderCollection = databse.collection('orders')
 
             app.get('/bikes', async (req, res) => {
 
                   const cursor = await bikeCollection.find({})
                   const result = await cursor.toArray()
-                  console.log(result);
+
                   res.send(result)
 
             })
 
             app.post('/bikes', async (req, res) => {
                   const bike = req.body;
-                  console.log(bike);
+
                   const result = await bikeCollection.insertOne(bike)
+
+                  res.json(result)
+
+            })
+
+            app.get('/purchase/:id', async (req, res) => {
+                  const id = req.params.id
+                  console.log(id);
+                  const query = { _id: ObjectId(id) }
+                  const result = await bikeCollection.findOne(query)
+
+                  res.json(result)
+
+
+            })
+
+            app.post('/orders', async (req, res) => {
+                  const order = req.body;
+                  const result = await bikeOrderCollection.insertOne(order)
                   console.log(result);
                   res.json(result)
 
