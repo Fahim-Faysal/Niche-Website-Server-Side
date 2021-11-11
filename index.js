@@ -58,6 +58,21 @@ async function run() {
                   res.json(result)
 
             })
+
+            app.get('/orders', async (req, res) => {
+                  const cursor = await bikeOrderCollection.find({})
+                  const result = await cursor.toArray()
+                  res.json(result)
+            })
+
+            app.get('/myorders', async (req, res) => {
+                  const email = req.query.email
+                  const query = { email: email }
+                  const cursor = await bikeOrderCollection.find(query)
+                  const result = await cursor.toArray();
+                  res.json(result)
+
+            })
       }
       finally {
             // await client.close()
