@@ -22,6 +22,7 @@ async function run() {
             const bikeCollection = databse.collection('bike')
             const bikeOrderCollection = databse.collection('orders')
             const usersCollection = databse.collection('users')
+            const reviewCollection = databse.collection('review')
 
             app.get('/bikes', async (req, res) => {
 
@@ -108,6 +109,23 @@ async function run() {
                   const filter = { email: user.email };
                   const updateDoc = { $set: { role: 'admin' } };
                   const result = await usersCollection.updateOne(filter, updateDoc)
+                  res.json(result)
+            })
+
+            //review posts
+
+            app.post('/review', async (req, res) => {
+                  const user = req.body
+                  const result = await reviewCollection.insertOne(user);
+
+                  res.json(result)
+            })
+
+            //load review
+
+            app.get('/review', async (req, res) => {
+                  const cursor = reviewCollection.find({})
+                  const result = await cursor.toArray()
                   res.json(result)
             })
       }
