@@ -21,6 +21,7 @@ async function run() {
             const databse = client.db('bike_shop');
             const bikeCollection = databse.collection('bike')
             const bikeOrderCollection = databse.collection('orders')
+            const usersCollection = databse.collection('users')
 
             app.get('/bikes', async (req, res) => {
 
@@ -72,6 +73,33 @@ async function run() {
                   const result = await cursor.toArray();
                   res.json(result)
 
+            })
+
+            app.post('/users', async (req, res) => {
+                  const user = req.body
+                  const result = await usersCollection.insertOne(user);
+
+                  res.json(result)
+            })
+
+            app.get('/user/:email', async (req, res) => {
+                  const email = req.params.email;
+                  const query = { email: email }
+                  const user = await usersCollection.findOne(query)
+                  let isAdmin = false
+                  if (user?.role === 'admin') {
+                        isAdmin = true
+                  }
+                  res.json({ admin: isAdmin })
+            })
+
+            app.put('/users/admin', async (req, res) => {
+                  const user = req.body;
+                  console.log(user);
+                  const filter = { email: user.email };
+                  const updateDoc = { $set: { role: 'admin' } };
+                  const result = await usersCollection.updateOne(filter, updateDoc)
+                  res.json(result)
             })
       }
       finally {
