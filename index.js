@@ -55,7 +55,6 @@ async function run() {
             app.post('/orders', async (req, res) => {
                   const order = req.body;
                   const result = await bikeOrderCollection.insertOne(order)
-                  console.log(result);
                   res.json(result)
 
             })
@@ -63,6 +62,16 @@ async function run() {
             app.get('/orders', async (req, res) => {
                   const cursor = await bikeOrderCollection.find({})
                   const result = await cursor.toArray()
+                  res.json(result)
+            })
+
+            //deleter an order
+
+            app.delete('/orders/:id', async (req, res) => {
+                  const id = req.params.id
+                  const query = { _id: ObjectId(id) }
+                  const result = await bikeOrderCollection.deleteOne(query)
+                  console.log(result);
                   res.json(result)
             })
 
