@@ -44,7 +44,6 @@ async function run() {
 
             app.get('/purchase/:id', async (req, res) => {
                   const id = req.params.id
-                  console.log(id);
                   const query = { _id: ObjectId(id) }
                   const result = await bikeCollection.findOne(query)
 
@@ -72,7 +71,6 @@ async function run() {
                   const id = req.params.id
                   const query = { _id: ObjectId(id) }
                   const result = await bikeOrderCollection.deleteOne(query)
-                  console.log(result);
                   res.json(result)
             })
 
@@ -117,7 +115,7 @@ async function run() {
             app.post('/review', async (req, res) => {
                   const user = req.body
                   const result = await reviewCollection.insertOne(user);
-
+                  console.log(result);
                   res.json(result)
             })
 
@@ -126,6 +124,7 @@ async function run() {
             app.get('/review', async (req, res) => {
                   const cursor = reviewCollection.find({})
                   const result = await cursor.toArray()
+
                   res.json(result)
             })
       }
